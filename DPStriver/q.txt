@@ -1,2 +1,3 @@
 https://www.codechef.com/problems/FTOL?tab=statement
 https://www.codechef.com/problems/MINORPATH?tab=statement
+https://codeforces.com/contest/1795/problem/E

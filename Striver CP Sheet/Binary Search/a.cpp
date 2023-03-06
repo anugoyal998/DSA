@@ -52,38 +52,70 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 void print(vi v){for(auto i : v){cout << i << " ";}nline}
 void print(vvi v){for(auto i : v){print(i);}nline}
 
-long long int fast_pow(int x,int y,long long int m/* modulo*/ = 1000000007){long long int res = 1;
-    long int a = 1LL*x;
-    long long int n = 1LL*y;
+// ================================== take ip/op like vector,pairs directly!==================================
+template<typename typC,typename typD> istream &operator>>(istream &cin,pair<typC,typD> &a) { return cin>>a.first>>a.second; }
+template<typename typC> istream &operator>>(istream &cin,vector<typC> &a) { for (auto &x:a) cin>>x; return cin; }
+template<typename typC,typename typD> ostream &operator<<(ostream &cout,const pair<typC,typD> &a) { return cout<<a.first<<' '<<a.second; }
+template<typename typC,typename typD> ostream &operator<<(ostream &cout,const vector<pair<typC,typD>> &a) { for (auto &x:a) cout<<x<<'\n'; return cout; }
+template<typename typC> ostream &operator<<(ostream &cout,const vector<typC> &a) { int n=a.size(); if (!n) return cout; cout<<a[0]; for (int i=1; i<n; i++) cout<<' '<<a[i]; return cout; }
+// ===================================END Of the input module ==========================================  
 
-    while(n){
-        if(n&1){
-            res = (res * (a % m)) % m, n--;
+map<char,vi> m;
+
+class Point{
+    public:
+    int l,r,d,u;
+    Point(int _l,int _r,int _d,int _u){
+        l = _l;r = _r;d = _d;u = _u;
+    }
+};
+
+bool help(vector<Point> left,vector<Point> right,int x,int y,int mid){
+    int n = left.size();
+    int i = 0, j = mid-1;
+    while(j<n){
+        if(x >= 0){
+
+        }else{
+            
         }
-        a = ((a % m) * (a % m)) % m;
-        n /= 2;
     }
-    return res;
-}
-
-bool isPrime(int n){
-    if(n==1)return false;
-    for(int i=2;i*i<=n;i++){
-        if(n%i == 0)return false;
-    }
-    return true;
-}
-
-int gcd(int a,int b){
-    return __gcd(a,b);
-}
-
-int lcm(int a,int b){
-    return (a * b) / gcd(a,b);
 }
 
 void solve(){
-    
+    int n;
+    cin >> n;
+    string s;
+    cin >> s;
+    int x,y;
+    cin >> x >> y;
+    int start = 0, end = n;
+    int ans = 0;
+    vector<Point> left,right;
+    int l = 0, r = 0, d = 0, u = 0;
+    for(auto c:s){
+        if(c == 'L')l++;
+        if(c == 'R')r++;
+        if(c == 'D')d++;
+        if(c == 'U')u++;
+        left.pb(Point(l,r,d,u));
+    }
+    l = 0, r = 0, d = 0, u = 0;
+    for(int i=n-1;i>=0;i--){
+        if(s[i] == 'L')l++;
+        if(s[i] == 'R')r++;
+        if(s[i] == 'D')d++;
+        if(s[i] == 'U')u++;
+        right.pb(Point(l,r,d,u));
+    }
+    while(start <= end){
+        int mid = (start + end)/2;
+        if(help(left,right,x,y,mid)){
+            ans = mid;
+            end = mid-1;
+        }else start = mid+1;
+    }
+    cout << ans << endl;
 }
 
 int main(){
@@ -93,10 +125,10 @@ freopen("input.txt", "r", stdin);
 freopen("output.txt", "w", stdout);
 #endif
     // fastio();
-    int t;
-    cin >> t;
-    while(t--){
+    // int t;
+    // cin >> t;
+    // while(t--){
         solve();
-    }
+    // }
     return 0;
 }

@@ -1,5 +1,10 @@
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
+#include <ext/pb_ds/assoc_container.hpp> // Common file 
+#include <ext/pb_ds/tree_policy.hpp> 
 using namespace std;
+using namespace __gnu_pbds;
+template <typename T>
+using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 #define fastio() ios_base::sync_with_stdio(false);cin.tie(NULL);cout.tie(NULL)
 #define MOD 1000000007
@@ -52,38 +57,36 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 void print(vi v){for(auto i : v){cout << i << " ";}nline}
 void print(vvi v){for(auto i : v){print(i);}nline}
 
-long long int fast_pow(int x,int y,long long int m/* modulo*/ = 1000000007){long long int res = 1;
-    long int a = 1LL*x;
-    long long int n = 1LL*y;
-
-    while(n){
-        if(n&1){
-            res = (res * (a % m)) % m, n--;
-        }
-        a = ((a % m) * (a % m)) % m;
-        n /= 2;
-    }
-    return res;
-}
-
-bool isPrime(int n){
-    if(n==1)return false;
-    for(int i=2;i*i<=n;i++){
-        if(n%i == 0)return false;
-    }
-    return true;
-}
-
-int gcd(int a,int b){
-    return __gcd(a,b);
-}
-
-int lcm(int a,int b){
-    return (a * b) / gcd(a,b);
-}
+// ================================== take ip/op like vector,pairs directly!==================================
+template<typename typC,typename typD> istream &operator>>(istream &cin,pair<typC,typD> &a) { return cin>>a.first>>a.second; }
+template<typename typC> istream &operator>>(istream &cin,vector<typC> &a) { for (auto &x:a) cin>>x; return cin; }
+template<typename typC,typename typD> ostream &operator<<(ostream &cout,const pair<typC,typD> &a) { return cout<<a.first<<' '<<a.second; }
+template<typename typC,typename typD> ostream &operator<<(ostream &cout,const vector<pair<typC,typD>> &a) { for (auto &x:a) cout<<x<<'\n'; return cout; }
+template<typename typC> ostream &operator<<(ostream &cout,const vector<typC> &a) { int n=a.size(); if (!n) return cout; cout<<a[0]; for (int i=1; i<n; i++) cout<<' '<<a[i]; return cout; }
+// ===================================END Of the input module ==========================================  
 
 void solve(){
-    
+    int n,k;
+    cin >> n >> k;
+    vi v(n);
+    cin >> v;
+    ordered_set<pair<int,int>> s;
+    vi ans;
+    int start = 0;
+    int end = 0;
+    while(end < n){
+        s.insert({v[end],end});
+        if(end-start+1 == k){
+            int x = k%2 == 0 ? (k/2) - 1 : (k/2);
+            auto it = s.find_by_order(x);
+            pair<int,int> p = *it;
+            ans.push_back(p.first); 
+            s.erase({v[start],start});
+            start++;
+        }
+        end++;
+    }
+    print(ans);
 }
 
 int main(){
@@ -92,11 +95,11 @@ freopen("Error.txt","w",stderr);
 freopen("input.txt", "r", stdin);
 freopen("output.txt", "w", stdout);
 #endif
-    // fastio();
-    int t;
-    cin >> t;
-    while(t--){
+//     // fastio();
+//     int t;
+//     cin >> t;
+//     while(t--){
         solve();
-    }
+    // }
     return 0;
 }

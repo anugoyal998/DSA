@@ -52,38 +52,43 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 void print(vi v){for(auto i : v){cout << i << " ";}nline}
 void print(vvi v){for(auto i : v){print(i);}nline}
 
-long long int fast_pow(int x,int y,long long int m/* modulo*/ = 1000000007){long long int res = 1;
-    long int a = 1LL*x;
-    long long int n = 1LL*y;
+// ================================== take ip/op like vector,pairs directly!==================================
+template<typename typC,typename typD> istream &operator>>(istream &cin,pair<typC,typD> &a) { return cin>>a.first>>a.second; }
+template<typename typC> istream &operator>>(istream &cin,vector<typC> &a) { for (auto &x:a) cin>>x; return cin; }
+template<typename typC,typename typD> ostream &operator<<(ostream &cout,const pair<typC,typD> &a) { return cout<<a.first<<' '<<a.second; }
+template<typename typC,typename typD> ostream &operator<<(ostream &cout,const vector<pair<typC,typD>> &a) { for (auto &x:a) cout<<x<<'\n'; return cout; }
+template<typename typC> ostream &operator<<(ostream &cout,const vector<typC> &a) { int n=a.size(); if (!n) return cout; cout<<a[0]; for (int i=1; i<n; i++) cout<<' '<<a[i]; return cout; }
+// ===================================END Of the input module ==========================================  
 
-    while(n){
-        if(n&1){
-            res = (res * (a % m)) % m, n--;
-        }
-        a = ((a % m) * (a % m)) % m;
-        n /= 2;
-    }
-    return res;
-}
-
-bool isPrime(int n){
-    if(n==1)return false;
-    for(int i=2;i*i<=n;i++){
-        if(n%i == 0)return false;
-    }
-    return true;
-}
-
-int gcd(int a,int b){
-    return __gcd(a,b);
-}
-
-int lcm(int a,int b){
-    return (a * b) / gcd(a,b);
+bool cmp(const pair<int, int>& a, const pair<int, int>& b){
+    return a.second < b.second;
 }
 
 void solve(){
-    
+    int n,k;
+    cin >> n >> k;
+    vector<pair<int, int>> v;
+    for(int i=0;i<n;i++){
+        int a,b;
+        cin >> a >> b;
+        v.push_back({a,b});
+    }
+    sort(v.begin(),v.end(),cmp);  
+    int ans = 1;
+    multiset<int> s;
+    s.insert(v[0].second);
+    for(int i=1;i<n;i++){
+        auto it = s.lower_bound(v[i].first);
+        if(it != s.end()){
+            s.erase(it);
+            s.insert(v[i].second);
+            ans++;
+        }else if(it == s.end() and s.size() < k){
+            s.insert(v[i].second);
+            ans++;
+        }
+    }
+    cout << ans << endl;
 }
 
 int main(){
@@ -93,10 +98,10 @@ freopen("input.txt", "r", stdin);
 freopen("output.txt", "w", stdout);
 #endif
     // fastio();
-    int t;
-    cin >> t;
-    while(t--){
+    // int t;
+    // cin >> t;
+    // while(t--){
         solve();
-    }
+    // }
     return 0;
 }

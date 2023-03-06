@@ -52,38 +52,25 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 void print(vi v){for(auto i : v){cout << i << " ";}nline}
 void print(vvi v){for(auto i : v){print(i);}nline}
 
-long long int fast_pow(int x,int y,long long int m/* modulo*/ = 1000000007){long long int res = 1;
-    long int a = 1LL*x;
-    long long int n = 1LL*y;
-
-    while(n){
-        if(n&1){
-            res = (res * (a % m)) % m, n--;
-        }
-        a = ((a % m) * (a % m)) % m;
-        n /= 2;
-    }
-    return res;
-}
-
-bool isPrime(int n){
-    if(n==1)return false;
-    for(int i=2;i*i<=n;i++){
-        if(n%i == 0)return false;
-    }
-    return true;
-}
-
-int gcd(int a,int b){
-    return __gcd(a,b);
-}
-
-int lcm(int a,int b){
-    return (a * b) / gcd(a,b);
-}
+// ================================== take ip/op like vector,pairs directly!==================================
+template<typename typC,typename typD> istream &operator>>(istream &cin,pair<typC,typD> &a) { return cin>>a.first>>a.second; }
+template<typename typC> istream &operator>>(istream &cin,vector<typC> &a) { for (auto &x:a) cin>>x; return cin; }
+template<typename typC,typename typD> ostream &operator<<(ostream &cout,const pair<typC,typD> &a) { return cout<<a.first<<' '<<a.second; }
+template<typename typC,typename typD> ostream &operator<<(ostream &cout,const vector<pair<typC,typD>> &a) { for (auto &x:a) cout<<x<<'\n'; return cout; }
+template<typename typC> ostream &operator<<(ostream &cout,const vector<typC> &a) { int n=a.size(); if (!n) return cout; cout<<a[0]; for (int i=1; i<n; i++) cout<<' '<<a[i]; return cout; }
+// ===================================END Of the input module ==========================================  
 
 void solve(){
-    
+    int n;
+    cin >> n;
+    vi v(n);
+    cin >> v;
+    sort(all(v));
+    ll cost = 0;
+    for(auto i:v){
+        cost += abs(i - v[(n/2)]);
+    }
+    cout << cost << endl;
 }
 
 int main(){
@@ -93,10 +80,10 @@ freopen("input.txt", "r", stdin);
 freopen("output.txt", "w", stdout);
 #endif
     // fastio();
-    int t;
-    cin >> t;
-    while(t--){
+    // int t;
+    // cin >> t;
+    // while(t--){
         solve();
-    }
+    // }
     return 0;
 }

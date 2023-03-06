@@ -52,38 +52,54 @@ template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i
 void print(vi v){for(auto i : v){cout << i << " ";}nline}
 void print(vvi v){for(auto i : v){print(i);}nline}
 
-long long int fast_pow(int x,int y,long long int m/* modulo*/ = 1000000007){long long int res = 1;
-    long int a = 1LL*x;
-    long long int n = 1LL*y;
+// ================================== take ip/op like vector,pairs directly!==================================
+template<typename typC,typename typD> istream &operator>>(istream &cin,pair<typC,typD> &a) { return cin>>a.first>>a.second; }
+template<typename typC> istream &operator>>(istream &cin,vector<typC> &a) { for (auto &x:a) cin>>x; return cin; }
+template<typename typC,typename typD> ostream &operator<<(ostream &cout,const pair<typC,typD> &a) { return cout<<a.first<<' '<<a.second; }
+template<typename typC,typename typD> ostream &operator<<(ostream &cout,const vector<pair<typC,typD>> &a) { for (auto &x:a) cout<<x<<'\n'; return cout; }
+template<typename typC> ostream &operator<<(ostream &cout,const vector<typC> &a) { int n=a.size(); if (!n) return cout; cout<<a[0]; for (int i=1; i<n; i++) cout<<' '<<a[i]; return cout; }
+// ===================================END Of the input module ==========================================  
 
-    while(n){
-        if(n&1){
-            res = (res * (a % m)) % m, n--;
+bool help(vi v,ll k,ll mid){
+    ll cnt = 0;
+    ll sum  = 0;
+    ll maxe = 0;
+    for(int i=0;i<v.size();i++){
+        sum += v[i];
+        if(sum == mid){
+            maxe = max(sum, maxe);
+            sum  = 0;
+            cnt++;
+        }else if(sum > mid){
+            sum -= v[i];
+            maxe = max(sum, maxe);
+            cnt++;
+            sum = v[i];
         }
-        a = ((a % m) * (a % m)) % m;
-        n /= 2;
     }
-    return res;
-}
-
-bool isPrime(int n){
-    if(n==1)return false;
-    for(int i=2;i*i<=n;i++){
-        if(n%i == 0)return false;
-    }
-    return true;
-}
-
-int gcd(int a,int b){
-    return __gcd(a,b);
-}
-
-int lcm(int a,int b){
-    return (a * b) / gcd(a,b);
+    if(sum > mid)return false;
+    if(sum != 0)cnt++;
+    if(cnt > k)return false;
+    return maxe <= mid;
 }
 
 void solve(){
-    
+    ll n,k;
+    cin >> n >> k;
+    vi v(n);
+    cin >> v;
+    ll start = *max_element(v.begin(),v.end());
+    ll end = accumulate(all(v),0LL);
+    ll ans = start;
+    while(start <= end){
+        ll mid = start + (end-start)/2;
+        debug(mid);
+        if(help(v,k,mid)){
+            ans = mid;
+            end = mid - 1;
+        }else start = mid + 1;
+    }
+    cout << ans << endl;
 }
 
 int main(){
@@ -93,10 +109,10 @@ freopen("input.txt", "r", stdin);
 freopen("output.txt", "w", stdout);
 #endif
     // fastio();
-    int t;
-    cin >> t;
-    while(t--){
+    // int t;
+    // cin >> t;
+    // while(t--){
         solve();
-    }
+    // }
     return 0;
 }
