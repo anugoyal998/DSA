@@ -1,3 +1,4 @@
+
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -16,14 +17,17 @@ using namespace std;
 #define sz(x) ((int)(x).size())
 #define all(x) (x).begin(), (x).end()
 #define loop(i,n) for(int i=0; i<n; i++)
+#define loop1(start,i,end) for(int i=start; i<end; i++)
 
 typedef long long ll;
 typedef unsigned long long ull;
 typedef long double lld;
 typedef vector<int> vi;
 typedef vector<double> vd;
+typedef vector<long long> vl;
 typedef vector<vector<int>> vvi;
 typedef vector<vector<double>> vvd;
+typedef vector<vector<long long>> vvl;
 
 #ifndef ONLINE_JUDGE
 #define debug(x) cerr << #x << " ";_print(x); cerr << endl;
@@ -51,7 +55,11 @@ template <class T> void _print(multiset <T> v) {cerr << "[ "; for (T i : v) {_pr
 template <class T, class V> void _print(map <T, V> v) {cerr << "[ "; for (auto i : v) {_print(i); cerr << " ";} cerr << "]";}
 
 void print(vi v){for(auto i : v){cout << i << " ";}nline}
+void print(vd v){for(auto i : v){cout << i << " ";}nline}
+void print(vl v){for(auto i : v){cout << i << " ";}nline}
 void print(vvi v){for(auto i : v){print(i);}nline}
+void print(vvd v){for(auto i : v){print(i);}nline}
+void print(vvl v){for(auto i : v){print(i);}nline}
 
 // ================================== take ip/op like vector,pairs directly!==================================
 template<typename typC,typename typD> istream &operator>>(istream &cin,pair<typC,typD> &a) { return cin>>a.first>>a.second; }
@@ -65,83 +73,60 @@ template<typename typC> ostream &operator<<(ostream &cout,const vector<typC> &a)
 vvi ipGraph(int n,int m,bool undirected = true){vvi v = vvi(n);loop(i,m){int x,y;cin >> x >> y;v[x].pb(y);if(undirected)v[y].pb(x);}return v;}
 //  ======================================END OF Graph Module========================================
 
-// void dfs(ll src,ll dst,vector<vector<pair<ll,ll>>> v,vector<ll> vis,ll sum,ll maxe,ll &ans){
-//     if(src == dst){
-//         ll cost = (sum - maxe) + maxe/2;
-//         ans = min(ans,cost);
-//         return;
-//     }
-//     vis[src] = 1;
-//     for(auto it:v[src]){
-//         if(!vis[it.first]){
-//             dfs(it.first,dst,v,vis,sum+it.second,max(maxe,it.second),ans);
-//         }
-//     }
-// }
+vvi v;
+vi vis;
+vi parent;
+int s,e;
+
+bool dfs(int node,int par){
+    vis[node] = 1;
+    parent[node] = par;
+    for(auto child : v[node]){
+        if(!vis[child]){
+            if(dfs(child,node))return true;
+        }else if(child != par){
+            s = child;
+            e = node;
+            return true;
+        }
+    }
+    return false;
+}
 
 void solve(){
-    ll n,m;
+    int n,m;
     cin >> n >> m;
-    vector<vector<pair<ll,ll>>> v(n);
+    v.resize(n);
+    vis.resize(n);
+    parent.resize(n);
     loop(i,m){
-        ll a,b,c;
-        cin >> a >> b >> c;
-        a--,b--;
-        v[a].pb({b,c});
+        int x,y;
+        cin >> x >> y;
+        x--,y--;
+        v[x].pb(y);
+        v[y].pb(x);
     }
-    // dijkstra
-    vector<pair<ll,ll>> distance(n,{1e18,0});
-    distance[0].first = 0;
-    set<pair<ll,ll>> s;
-    s.insert({0,0});
-    while(s.size()){
-        auto it = s.begin();
-        pair<ll,ll> p = *it;
-        ll prevDistance = p.first;
-        ll prevNode = p.second;
-        s.erase(it);
-        for(auto iter:v[prevNode]){
-            ll nextNode = iter.first;
-            ll nextDistance = prevDistance + iter.second;
-            if(nextDistance < distance[nextNode].first){
-                if(distance[nextNode].first != 1e18)
-                    s.erase({distance[nextNode].first,nextNode});
-                distance[nextNode].first = nextDistance;
-                distance[nextNode].second = max(distance[nextNode].second,iter.second);
-                s.insert({nextDistance,nextNode});
+    vis = vi(n,0);
+    loop(i,n){
+        if(!vis[i]){
+            bool f = dfs(i,-1);
+            if(f){
+                debug(parent);
+                vi ans;
+                int x = e;
+                ans.pb(e+1);
+                while(x != s){
+                    x = parent[x];
+                    ans.pb(x+1);
+                }
+                ans.pb(e+1);
+                cout << ans.size() << endl;
+                print(ans);
+                return;
             }
         }
     }
-
-    debug(distance);
-
-    ll cost = distance[n-1].first - distance[n-1].second + (distance[n-1].second)/2;
-    cout << cost << '\n';
-
-
-    // vector<ll> vis(n,0);
-    // ll ans = 1e18;
-    // dfs(0,n-1,v,vis,0,0,ans);
-    // bfs
-    // vis[0] = 1;
-    // queue<vector<ll>> q;
-    // q.push({0,0,0}); // node, sum, maxe
-    // while(!q.empty()){
-    //     vector<ll> tmp = q.front();
-    //     q.pop();
-    //     ll node = tmp[0], sum = tmp[1], maxe = tmp[2];
-    //     if(node == n-1){
-    //         ll cost = (sum - maxe) + maxe/2;
-    //         ans = min(ans,cost);
-    //     }
-    //     for(auto it:v[node]){
-    //         if(!vis[it.first]){
-    //             vis[it.first] = 1;
-    //             q.push({it.first,sum+it.second,max(maxe,it.second)});
-    //         }
-    //     }
-    // }
-    // cout << ans << endl;
+    cout << "IMPOSSIBLE" << endl;
 }
 
 int main(){
@@ -150,7 +135,7 @@ freopen("Error.txt","w",stderr);
 freopen("input.txt", "r", stdin);
 freopen("output.txt", "w", stdout);
 #endif
-    // fastio();
+    fastio();
     // int t;
     // cin >> t;
     // while(t--){

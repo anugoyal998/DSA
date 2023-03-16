@@ -20,7 +20,7 @@ public:
 					dist[v] = dist[u] + wt;
 				}
 			}
-		}
+		}	
 		// Nth relaxation to check negative cycle
 		for (auto it : edges) {
 			int u = it[0];
