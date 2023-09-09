@@ -67,41 +67,49 @@ void modadd(int &a , int b,int m=MOD) {a=((a%m)+(b%m))%m;}
 void modsub(int &a , int b,int m=MOD) {a=((a%m)-(b%m)+m)%m;}
 void modmul(int &a , int b,int m=MOD) {a=((a%m)*(b%m))%m;}
 
-bool f(vi v,int mid,int k){
-    int n = v.size();
-    if(v[(n/2)]<mid){
-        int diff = mid-v[(n/2)];
-        if(k<diff)return false;
-        k -= diff;
-        v[(n/2)] = mid;
-    }
-    for(int i=(n/2)+1;i<n;i++){
-        if(v[i]<v[i-1]){
-            int diff = v[i-1] - v[i];
-            if(k<diff){
-                return false;
-            }
-            v[i] = v[i-1];
-            k -= diff;
+bool f(vi freq,int mid,int k){
+    bool flag = (mid%2 == 0 ? false : true);
+    int need = (mid - (flag ? 1 : 0))*k;
+    int sum = 0;
+    for(int i=0;i<26;i++){
+        int cnt = (freq[i]%2 == 0 ? 0 : 1);
+        freq[i] -= cnt;
+        if(sum+freq[i]>need){
+            int diff = need - sum;
+            freq[i] -= diff;
+            sum = need;
+            freq[i] += cnt;    
+            break;
+        }else{
+            sum += freq[i];
+            freq[i] = 0;
         }
+        freq[i] += cnt;
     }
-    return true;
+    if(sum<need)return false;
+    if(!flag)return true;
+    sum = 0;
+    sum = accumulate(all(freq),0);
+    return sum>=k;
 }
 
 void solve(){
     int n,k;cin >> n >> k;
-    vi v(n);cin >> v;
-    sort(all(v));
-    int ans = -1;
-    int low = 1, high = 1e12;
+    string s;cin >> s;
+    vi freq(26,0);
+    for(auto c:s)freq[c-'a']++;
+    int low = 1, high = n;
+    int ans = 1;
     while(low<=high){
         int mid = low + (high-low)/2;
-        if(f(v,mid,k)){
+        if(f(freq,mid,k)){
             low = mid+1;
             ans = mid;
-        }else high = mid-1;
+        }else{
+            high = mid-1;
+        }
     }
-    cout << ans << "\n";
+    cout << ans << endl;
 }
 
 int32_t main(){
@@ -111,7 +119,7 @@ int32_t main(){
 // freopen("output.txt", "w", stdout);
 // #endif
     fastio();
-    int t=1;
+    int t;cin >> t;
     while(t--){
         solve();
     }

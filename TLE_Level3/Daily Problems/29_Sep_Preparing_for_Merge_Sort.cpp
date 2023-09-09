@@ -67,49 +67,47 @@ void modadd(int &a , int b,int m=MOD) {a=((a%m)+(b%m))%m;}
 void modsub(int &a , int b,int m=MOD) {a=((a%m)-(b%m)+m)%m;}
 void modmul(int &a , int b,int m=MOD) {a=((a%m)*(b%m))%m;}
 
-bool f(vi v,int mid,int k){
-    int n = v.size();
-    if(v[(n/2)]<mid){
-        int diff = mid-v[(n/2)];
-        if(k<diff)return false;
-        k -= diff;
-        v[(n/2)] = mid;
-    }
-    for(int i=(n/2)+1;i<n;i++){
-        if(v[i]<v[i-1]){
-            int diff = v[i-1] - v[i];
-            if(k<diff){
-                return false;
+void solve(){
+    int n;cin >> n;vi v(n);cin >> v;
+    vvi ans;
+    ans.push_back({v[0]});
+    set<int> s;
+    s.insert(v[0]);
+    unordered_map<int,int> m;
+    m[v[0]] = 0;
+    for(int i=1;i<n;i++){
+        if(v[i] > ans[0].back()){
+            s.erase(ans[0].back());
+            m.erase(ans[0].back());
+            ans[0].push_back(v[i]);
+            s.insert(v[i]);
+            m[v[i]] = 0;
+        }else{
+            auto it = s.lower_bound(v[i]);
+            if(it == s.begin()){
+                int size = ans.size();
+                ans.push_back({v[i]});
+                s.insert(v[i]);
+                m[v[i]] = size;
+            }else{
+                it--;
+                int index = m[*it];
+                int back = ans[index].back();
+                s.erase(back);
+                m.erase(back);
+                ans[index].push_back(v[i]);
+                s.insert(v[i]);
+                m[v[i]] = index;
             }
-            v[i] = v[i-1];
-            k -= diff;
         }
     }
-    return true;
-}
-
-void solve(){
-    int n,k;cin >> n >> k;
-    vi v(n);cin >> v;
-    sort(all(v));
-    int ans = -1;
-    int low = 1, high = 1e12;
-    while(low<=high){
-        int mid = low + (high-low)/2;
-        if(f(v,mid,k)){
-            low = mid+1;
-            ans = mid;
-        }else high = mid-1;
+    for(auto i:ans){
+        for(auto j:i)cout << j << " ";
+        cout << "\n";
     }
-    cout << ans << "\n";
 }
 
 int32_t main(){
-// #ifndef ONLINE_JUDGE
-// freopen("Error.txt","w",stderr);
-// freopen("input.txt", "r", stdin);
-// freopen("output.txt", "w", stdout);
-// #endif
     fastio();
     int t=1;
     while(t--){

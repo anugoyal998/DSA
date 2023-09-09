@@ -67,49 +67,66 @@ void modadd(int &a , int b,int m=MOD) {a=((a%m)+(b%m))%m;}
 void modsub(int &a , int b,int m=MOD) {a=((a%m)-(b%m)+m)%m;}
 void modmul(int &a , int b,int m=MOD) {a=((a%m)*(b%m))%m;}
 
-bool f(vi v,int mid,int k){
-    int n = v.size();
-    if(v[(n/2)]<mid){
-        int diff = mid-v[(n/2)];
-        if(k<diff)return false;
-        k -= diff;
-        v[(n/2)] = mid;
-    }
-    for(int i=(n/2)+1;i<n;i++){
-        if(v[i]<v[i-1]){
-            int diff = v[i-1] - v[i];
-            if(k<diff){
-                return false;
-            }
-            v[i] = v[i-1];
-            k -= diff;
+void solve(){
+    int n;cin >> n;vi a(n);cin >> a;
+    int m;cin >> m;vi b(m);cin >> b;
+    sort(all(a));sort(all(b));
+    int diff = 0;
+    int x = -1, y = -1;
+    for(int i=n-1;i>=0;i--){
+        int d = a[i];
+        int s1 = (i+1)*3 + (n-1-i)*2;
+        int p = upper_bound(all(b),d) - b.begin();
+        int s2 = 2*p + 3*(m-p);
+        if(s1-s2>diff){
+            diff = s1-s2;
+            x = s1, y = s2;
+        }else if(s1-s2==diff){
+            if(s1>x)x = s1, y = s2;
+        }
+
+        d = a[i]-1;
+        int p1 = upper_bound(all(a),d) - a.begin();
+        s1 = 3*(n-p1) + 2*p1;
+        int p2 = upper_bound(all(b),d) - b.begin();
+        s2 = 3*(m-p2) + 2*p2;
+        if(s1-s2>diff){
+            diff = s1-s2;
+            x = s1, y = s2;
+        }else if(s1-s2==diff){
+            if(s1>x)x = s1, y = s2;
         }
     }
-    return true;
-}
 
-void solve(){
-    int n,k;cin >> n >> k;
-    vi v(n);cin >> v;
-    sort(all(v));
-    int ans = -1;
-    int low = 1, high = 1e12;
-    while(low<=high){
-        int mid = low + (high-low)/2;
-        if(f(v,mid,k)){
-            low = mid+1;
-            ans = mid;
-        }else high = mid-1;
+    for(int i=0;i<m;i++){
+        int d = b[i];
+        int p1 = upper_bound(all(a),d) - a.begin();
+        int s1 = 3*(n-p1) + 2*p1;
+        int p2 = upper_bound(all(b),d) - b.begin();
+        int s2 = 3*(m-p2) + 2*p2;
+        if(s1-s2>diff){
+            diff = s1-s2;
+            x = s1, y = s2;
+        }else if(s1-s2==diff){
+            if(s1>x)x = s1, y = s2;
+        }
+
+        d = b[i]-1;
+        p1 = upper_bound(all(a),d) - a.begin();
+        s1 = 3*(n-p1) + 2*p1;
+        p2 = upper_bound(all(b),d) - b.begin();
+        s2 = 3*(m-p2) + 2*p2;
+        if(s1-s2>diff){
+            diff = s1-s2;
+            x = s1, y = s2;
+        }else if(s1-s2==diff){
+            if(s1>x)x = s1, y = s2;
+        }
     }
-    cout << ans << "\n";
+    cout << x << ":" << y << "\n";
 }
 
 int32_t main(){
-// #ifndef ONLINE_JUDGE
-// freopen("Error.txt","w",stderr);
-// freopen("input.txt", "r", stdin);
-// freopen("output.txt", "w", stdout);
-// #endif
     fastio();
     int t=1;
     while(t--){
